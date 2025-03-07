@@ -1,12 +1,9 @@
 const { Pool } = require('pg');
 require('dotenv').config();
-
+console.log('✅ Variáveis de ambiente carregadas:', process.env);
 const pool = new Pool({
-  connectionString: process.env.URL_DO_BANCO_DE_DADOS,
-
-    ssl: {
-        rejectUnauthorized: false, // Necessário para conexões seguras
-    }
+    connectionString: process.env.URL_DO_BANCO_DE_DADOS, // Confere se a variável está certa
+    ssl: process.env.URL_DO_BANCO_DE_DADOS.includes("railway.app") ? { rejectUnauthorized: false } : false
 });
 
 pool.connect()
