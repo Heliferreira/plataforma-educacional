@@ -1,18 +1,22 @@
 const jwt = require('jsonwebtoken');
 
 const autenticarUsuarioMiddleware = (req, res, next) => {
-    const token = req.header('Authorization');
+    const authHeader = req.headers['authorization'];
 
-    if (!token) {
-        return res.status(401).json({ erro: 'Acesso negado! Nenhum token fornecido.' });
+    if (!authHeader) {
+        return res.status(401).json({ erro: 'Token não fornecido!' });
     }
 
+    const token = authHeader.split(' ')[1]; // Pega apenas o token sem o "Bearer"
+    
     try {
-        const decoded = jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET);
-        req.usuarioId = decoded.id;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log('✅ ID extraído do token:', decoded.id); // Verificar se o ID está sendo extraído
+        req.usuarioId = decoded.id; // Salva o ID do usuário na requisição para uso futuro
         next();
     } catch (erro) {
-        res.status(401).json({ erro: 'Token inválido!' });
+        console.error('❌ Erro ao verificar token:', erro);
+        return res.status(401).json({ erro: 'Token inválido!' });
     }
 };
 
