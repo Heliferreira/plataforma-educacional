@@ -85,6 +85,8 @@ router.put('/usuarios/:id', async (req, res) => {
 
 // 🔹 Rota POST: Login de usuário (gera um token JWT)
 router.post('/login', async (req, res) => {
+    console.log(req.body);
+ 
     try {
         const { email, senha } = req.body;
 
