@@ -4,8 +4,10 @@ console.log('✅ Variáveis de ambiente carregadas:', process.env);
 const { Pool } = require('pg');
 
 const pool = new Pool({
-    connectionString: process.env.URL_DO_BANCO_DE_DADOS, // Confere se a variável está certa
-    ssl: process.env.URL_DO_BANCO_DE_DADOS.includes("railway.app") ? { rejectUnauthorized: false } : false
+    connectionString: process.env.DATABASE_URL || process.env.URL_DO_BANCO_DE_DADOS, // Usa a variável correta
+    ssl: (process.env.DATABASE_URL || process.env.URL_DO_BANCO_DE_DADOS).includes("railway.app") 
+        ? { rejectUnauthorized: false } 
+        : false,
 });
 
 pool.connect()

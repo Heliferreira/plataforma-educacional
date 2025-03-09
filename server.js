@@ -1,5 +1,6 @@
 require('dotenv').config();
-console.log('DATABASE_URL:', process.env.DATABASE_URL)
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
+console.log('JWT_SECRET:', process.env.JWT_SECRET);
 
 const express = require('express');
 const app = express();
@@ -12,5 +13,4 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
-console.log('JWT_SECRET:', process.env.JWT_SECRET);
-console.log('DATABASE_URL:', process.env.DATABASE_URL);
+
