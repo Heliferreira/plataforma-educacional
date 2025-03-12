@@ -9,7 +9,12 @@ const usuariosRoutes = require('./src/routes/usuariosRoutes');
 app.use(express.json()); // ATENÇÃO: Isso permite receber JSON no POST
 app.use('/api', usuariosRoutes);
 
+// Endpoint simples para testar se a aplicação está respondendo
+app.get('/', (req, res) => {
+  res.send('A plataforma está funcionando!');
+});
+
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
