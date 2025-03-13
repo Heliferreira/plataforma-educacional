@@ -21,6 +21,14 @@ router.post('/usuarios', async (req, res) => {
     try {
         const { nome, email, senha } = req.body;
 
+        if (!nome || !email || !senha) {
+            return res.status(400).json({ mensagem: "Nome, e-mail e senha são obrigatórios!" });
+        }
+
+        console.log("Nome:", nome);
+        console.log("E-mail:", email);
+        console.log("Senha:", senha);  // Verificar se a senha está sendo recebida corretamente
+
         // Verifica se o e-mail já existe
         const usuarioExistente = await pool.query(
             'SELECT id FROM usuarios WHERE email = $1', [email]
@@ -30,13 +38,19 @@ router.post('/usuarios', async (req, res) => {
             return res.status(400).json({ mensagem: "Este e-mail já está em uso!" });
         }
 
+        // Verifica se a senha foi recebida corretamente
+        if (typeof senha !== 'string' || senha.trim() === '') {
+            return res.status(400).json({ mensagem: "Senha inválida!" });
+        }
+
         // Criptografa a senha antes de salvar
         const senhaCriptografada = await bcrypt.hash(senha, 10);
+        console.log("Senha criptografada:", senhaCriptografada);  // Verificar se a senha foi criptografada corretamente
 
         // Insere o novo usuário
         const resultado = await pool.query(
             'INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3) RETURNING id, nome, email',
-            [nome, email, senhaCriptografada] // Alterado para senhaCriptografada
+            [nome, email, senhaCriptografada]
         );
 
         res.status(201).json(resultado.rows[0]); // Retorna o usuário cadastrado
@@ -78,7 +92,7 @@ router.put('/usuarios/:id', async (req, res) => {
 // 🔹 Rota POST: Login de usuário (gera um token JWT)
 router.post('/login', async (req, res) => {
     console.log(req.body);
-
+ 
     try {
         const { email, senha } = req.body;
 
