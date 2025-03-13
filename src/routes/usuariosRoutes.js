@@ -11,7 +11,7 @@ router.get('/usuarios', async (req, res) => {
         const { rows } = await pool.query('SELECT id, nome, email FROM usuarios');
         res.status(200).json(rows);
     } catch (error) {
-        console.error(error);
+        console.error("Erro ao cadastrar usuário:", error);
         res.status(500).json({ mensagem: "Erro ao buscar usuários!" });
     }
 });
@@ -20,6 +20,8 @@ router.get('/usuarios', async (req, res) => {
 router.post('/usuarios', async (req, res) => {
     try {
         const { nome, email, senha } = req.body;
+
+        console.log("Dados recebidos:", req.body);  // Adicione isso para verificar o que está chegando
 
         if (!nome || !email || !senha) {
             return res.status(400).json({ mensagem: "Nome, e-mail e senha são obrigatórios!" });
