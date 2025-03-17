@@ -11,7 +11,7 @@ router.get('/usuarios', async (req, res) => {
         const { rows } = await pool.query('SELECT id, nome, email FROM usuarios');
         res.status(200).json(rows);
     } catch (error) {
-        console.error("Erro ao cadastrar usuário:", error);
+        console.error("Erro ao buscar usuários:", error);
         res.status(500).json({ mensagem: "Erro ao buscar usuários!" });
     }
 });
@@ -21,28 +21,19 @@ router.post('/usuarios', async (req, res) => {
     try {
         const { nome, email, senha } = req.body;
 
-        console.log("Dados recebidos:", req.body);  // Adicione isso para verificar o que está chegando
+        console.log("Dados recebidos:", req.body);  // Verifique se os dados estão chegando corretamente
 
         if (!nome || !email || !senha) {
             return res.status(400).json({ mensagem: "Nome, e-mail e senha são obrigatórios!" });
         }
 
-        console.log("Nome:", nome);
-        console.log("E-mail:", email);
-        console.log("Senha:", senha);  // Verificar se a senha está sendo recebida corretamente
-
         // Verifica se o e-mail já existe
         const usuarioExistente = await pool.query(
             'SELECT id FROM usuarios WHERE email = $1', [email]
         );
-        console.log(usuarioExistente.rows);
+        console.log(usuarioExistente.rows);  // Verifique o resultado da consulta
         if (usuarioExistente.rows.length > 0) {
             return res.status(400).json({ mensagem: "Este e-mail já está em uso!" });
-        }
-
-        // Verifica se a senha foi recebida corretamente
-        if (typeof senha !== 'string' || senha.trim() === '') {
-            return res.status(400).json({ mensagem: "Senha inválida!" });
         }
 
         // Criptografa a senha antes de salvar
@@ -57,7 +48,7 @@ router.post('/usuarios', async (req, res) => {
 
         res.status(201).json(resultado.rows[0]); // Retorna o usuário cadastrado
     } catch (error) {
-        console.error(error);
+        console.error("Erro ao cadastrar usuário:", error);
         res.status(500).json({ mensagem: "Erro ao cadastrar usuário!" });
     }
 });
@@ -86,7 +77,7 @@ router.put('/usuarios/:id', async (req, res) => {
         
         res.status(200).json({ mensagem: 'Usuário atualizado com sucesso!', usuario: resultado.rows[0] });
     } catch (error) {
-        console.error(error);
+        console.error("Erro ao atualizar usuário:", error);
         res.status(500).json({ mensagem: "Erro ao atualizar usuário!" });
     }
 });
@@ -123,7 +114,7 @@ router.post('/login', async (req, res) => {
 
         res.status(200).json({ mensagem: "Login realizado com sucesso!", token });
     } catch (error) {
-        console.error(error);
+        console.error("Erro ao fazer login:", error);
         res.status(500).json({ mensagem: "Erro ao fazer login!" });
     }
 });
